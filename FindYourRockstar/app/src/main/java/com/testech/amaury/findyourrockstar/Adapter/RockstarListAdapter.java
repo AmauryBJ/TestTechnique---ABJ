@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -46,6 +48,21 @@ public class RockstarListAdapter extends ArrayAdapter {
             TextView status = (TextView) convertView.findViewById(R.id.textViewStatus);
             CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBoxBookmark);
             ImageView pic = (ImageView) convertView.findViewById(R.id.imageViewPicture);
+
+            //Checkbox event
+            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+
+                        Log.d("TEST","Checked");
+
+                    }
+                    else
+                        Log.d("TEST","Unchecked");
+
+                }
+            });
 
             //Set values
             //Name
