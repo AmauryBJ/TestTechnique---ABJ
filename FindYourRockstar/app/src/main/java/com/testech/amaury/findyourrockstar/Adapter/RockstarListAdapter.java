@@ -2,17 +2,21 @@ package com.testech.amaury.findyourrockstar.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.testech.amaury.findyourrockstar.DataModels.Rockstar;
 import com.testech.amaury.findyourrockstar.R;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -36,13 +40,27 @@ public class RockstarListAdapter extends ArrayAdapter {
 
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.rockstarrowmain, parent, false);
-            TextView name = (TextView) convertView.findViewById(R.id.textView1);
-            CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox1);
-            name.setText(modelItems.get(position).getFirstName());
+
+            //Get elements
+            TextView name = (TextView) convertView.findViewById(R.id.textViewName);
+            TextView status = (TextView) convertView.findViewById(R.id.textViewStatus);
+            CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBoxBookmark);
+            ImageView pic = (ImageView) convertView.findViewById(R.id.imageViewPicture);
+
+            //Set values
+            //Name
+            name.setText(modelItems.get(position).getFirstName() + " " + modelItems.get(position).getLastName());
+            //Status
+            status.setText(modelItems.get(position).getStatus());
+            //Checkbox
             if(modelItems.get(position).getValue() == 1)
-            cb.setChecked(true);
+                cb.setChecked(true);
             else
-            cb.setChecked(false);
+                cb.setChecked(false);
+            //Image
+            Picasso.with(context).load("http://54.72.181.8/yolo/" + modelItems.get(position).getHisFace()).into(pic);
+
+
             return convertView;
     }
 
