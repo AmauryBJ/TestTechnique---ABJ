@@ -12,6 +12,8 @@ public class Rockstar {
     public String status;
     public String hisface;
 
+    public int value;
+
     //endregion
 
     //region Constructor
@@ -25,6 +27,26 @@ public class Rockstar {
     }
 
     //endregion
+
+    public String getFirstName(){
+        return this.firstname;
+    }
+
+    public String getLastName(){
+        return this.lastname;
+    }
+
+    public String getStatus(){
+        return this.status;
+    }
+
+    public String getHisFace(){
+        return this.hisface;
+    }
+
+    public int getValue(){
+        return this.value;
+    }
 
     //region Override methods
 

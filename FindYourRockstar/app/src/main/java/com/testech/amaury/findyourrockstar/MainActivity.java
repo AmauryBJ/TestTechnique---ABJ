@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
 
+        vpPager.setCurrentItem(1);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1: // Fragment # 0 - This will show FirstFragment different title
                     return RockstarListFragment.newInstance(1, "Page # 2");
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    return BookmarkFragment.newInstance(2, "Page # 3");
+                    return ProfilFragment.newInstance(2, "Page # 3");
                 default:
                     return null;
             }

@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.testech.amaury.findyourrockstar.RockstarListFragment">
-
+<!--
     <Button
         android:id="@+id/btnDataRequest"
         android:layout_width="wrap_content"
@@ -13,12 +14,21 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:text="Reload Data"/>
+    -->
 
-    <ListView
-        android:id="@+id/rockstarList"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_width="match_parent">
-    </ListView>
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/rockstarList"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_width="match_parent">
+        </ListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

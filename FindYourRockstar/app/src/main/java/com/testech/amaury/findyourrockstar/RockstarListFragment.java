@@ -5,7 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.testech.amaury.findyourrockstar.Adapter.RockstarListAdapter;
 import com.testech.amaury.findyourrockstar.Controllers.AppController;
 import com.testech.amaury.findyourrockstar.DataModels.Rockstar;
 
@@ -45,7 +48,7 @@ public class RockstarListFragment extends Fragment {
     public static final String TAG = AppController.class.getSimpleName();
 
     //List adapter
-    ArrayAdapter<Rockstar> adapter;
+    RockstarListAdapter adapterList;
 
     // Progress dialog
     private ProgressDialog pDialog;
@@ -59,6 +62,9 @@ public class RockstarListFragment extends Fragment {
     private String urlJson = "http://54.72.181.8/yolo/contacts.json";
 
     private View myFragmentView;
+
+    private SwipeRefreshLayout swipeContainer;
+
 
     //endregion
 
@@ -108,10 +114,35 @@ public class RockstarListFragment extends Fragment {
             pDialog.dismiss();
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         myFragmentView = inflater.inflate(R.layout.fragment_rockstar_list, container, false);
+
+        //region Init PullToRefresh
+
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) myFragmentView.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                makeJsonDataRequest();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+        //endregion
 
         //region Init Loading
 
@@ -121,33 +152,19 @@ public class RockstarListFragment extends Fragment {
 
         //endregion
 
-        //region Init Buttons
-
-        //Get BTN from view
-        btnReloadDataRequest = (Button) myFragmentView.findViewById(R.id.btnDataRequest);
-        btnReloadDataRequest.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                Log.d("Button", "ReloadData click");
-
-                //Make request
-                makeJsonDataRequest();
-            }
-        });
-
-        //endregion
-
         //region init ListView
 
         // Get ListView object from xml
         listView = (ListView) myFragmentView.findViewById(R.id.rockstarList);
         // Defined Array values to show in ListView
         ArrayList<Rockstar> values = new ArrayList<Rockstar>();
-        adapter = new ArrayAdapter<Rockstar>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
-        // Assign adapter to ListView
-        listView.setAdapter(adapter);
+
+        //adapter = new ArrayAdapter<Rockstar>(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1, values);
+        //listView.setAdapter(adapter);
+
+
+        adapterList = new RockstarListAdapter(getActivity(),values);
+        listView.setAdapter(adapterList);
 
         //Set event tap on rockstar line
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -160,6 +177,9 @@ public class RockstarListFragment extends Fragment {
 
 
         //endregion
+
+        //Make request
+        makeJsonDataRequest();
 
         return myFragmentView;
     }
@@ -179,7 +199,7 @@ public class RockstarListFragment extends Fragment {
                 Log.d(TAG, response.toString());
 
                 //Suppression de la liste
-                adapter.clear();
+                adapterList.clear();
 
                 try {
 
@@ -198,9 +218,13 @@ public class RockstarListFragment extends Fragment {
                         Log.d("Rockstar : ",elmt.toString());
 
                         //Ajout de l'élément
-                        adapter.add(elmt);
+                        adapterList.add(elmt);
+
 
                     }
+
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    swipeContainer.setRefreshing(false);
 
 
                 } catch (JSONException e) {
@@ -208,6 +232,9 @@ public class RockstarListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    swipeContainer.setRefreshing(false);
+
                 }
 
                 // hide the progress dialog
@@ -221,6 +248,9 @@ public class RockstarListFragment extends Fragment {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getActivity().getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+
 
                 // hide the progress dialog
                 //hidepDialog();
@@ -230,6 +260,7 @@ public class RockstarListFragment extends Fragment {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
+
     }
 
     //endregion
